@@ -16,7 +16,6 @@ public class MainActivity extends baseActivity {
     LinearLayout linearLayout;
     View.OnClickListener clickListener;
 
-    String storeId;
 
     protected void init() {
         setContentView(R.layout.activity_main);
@@ -34,17 +33,18 @@ public class MainActivity extends baseActivity {
         bot_chi = findViewById(R.id.bottom_btn_chi);
 
 
-        Intent intent = getIntent();
 
-        storeId = intent.getStringExtra("storeNum");
+        firstPage first = new firstPage();
+
+        first.callBack(firstPage.storeNumber,getApplication());
+
 
 
 
         linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),management.class);
-                intent.putExtra("storeNum",storeId);
+                Intent intent = new Intent(getApplicationContext(),password.class);
                 startActivity(intent);
                 return true;
             }
