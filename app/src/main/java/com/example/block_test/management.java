@@ -6,15 +6,19 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Looper;
 import android.os.PowerManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.ActionProvider;
 import android.view.View;
@@ -26,6 +30,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -34,11 +39,14 @@ import android.widget.Toast;
 import androidx.core.content.FileProvider;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
@@ -48,21 +56,26 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.block_test.MainActivity.top_image;
+
 public class management extends baseActivity {
     static String videoName;
+    static List<ResponseInfo.data> infoList = null;
 
+    Bitmap mSaveBm, sharedPic;
     AutoCompleteTextView top_auto, bot_auto;
     TextView storeId;
-    EditText top_consumer, top_sell, top_size, top_memo, top_goods;
+    EditText top_consumer, top_sell, top_size, top_memo, top_goods, top_color;
     EditText bot_consumer, bot_sell, bot_size, bot_memo, bot_goods;
-    Button top_search, bot_search, video_down, img_down;
+    Button top_search, bot_search, video_down, info_save;
     APIInterface apiInterface2;
     ScrollView scrollView;
     LinearLayout linearLayout;
     View.OnClickListener cl;
-
-    String[] videoUrl = new String[4];
+    String lang = null;
+    String[] videoUrl;
     String imageUrl = null;
+
     private ProgressDialog progressBar;
 
     static final int PERMISSION_REQUEST_CODE = 1;
@@ -97,7 +110,7 @@ public class management extends baseActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_manage);
 
-        img_down = findViewById(R.id.img_down);
+        info_save = findViewById(R.id.goodsInfobtn);
         video_down = findViewById(R.id.video_down);
         scrollView = findViewById(R.id.scrView);
         linearLayout = findViewById(R.id.manageLine);
@@ -112,6 +125,7 @@ public class management extends baseActivity {
         top_sell = findViewById(R.id.top_sell);
         top_size = findViewById(R.id.top_size);
         top_memo = findViewById(R.id.top_memo);
+        top_color = findViewById(R.id.top_color);
 
         bot_consumer = findViewById(R.id.bot_consumer);
         bot_sell = findViewById(R.id.bot_sell);
@@ -144,30 +158,47 @@ public class management extends baseActivity {
                 @Override
                 public void onResponse(Call<ResponseInfo> call, Response<ResponseInfo> response) {
                     ResponseInfo responseInfo = response.body();
-                    List<ResponseInfo.data> infoList = responseInfo.data;
+                    infoList = responseInfo.data;
+                    if (infoList.size() == 0) {
+                        Toast.makeText(getApplicationContext(), "제품 번호가 잘못되었습니다.", Toast.LENGTH_LONG).show();
+                    } else {
+                        top_goods.setText(infoList.get(0).goodTitle);
+                        top_consumer.setText(infoList.get(0).price + "");
+                        top_size.setText(infoList.get(0).size);
+                        top_color.setText(infoList.get(0).color);
 
-                    top_goods.setText(infoList.get(0).goodTitle);
-                    top_sell.setText(infoList.get(0).price + "");
-                    top_size.setText(infoList.get(0).size);
-                    imageUrl = infoList.get(0).imgPaths.toString().replaceFirst("http", "https");
-                    for (int i = 0; i < infoList.size(); i++) {
-                        String urlTemp;
+                        imageUrl = infoList.get(0).imgPaths.toString();
+                        videoUrl = new String[infoList.size()];
+
+
+                        for (int i = 0; i < infoList.size(); i++) {
+                            String urlTemp;
 //                        videoUrl[i] = infoList.get(i).mp4Paths.toString();
 //                                .add(infoList.get(i).mp4Paths.toString());
-                        urlTemp = infoList.get(i).mp4Paths.toString().replaceFirst("http", "https");
+                            urlTemp = infoList.get(i).mp4Paths.toString();
 //                        urlTemp.replaceFirst("http","https");
 
 //                        videoUrl[i].replace("http","https");
-                        videoUrl[i] = urlTemp;
-                        Log.d("url 찍기", videoUrl[i]);
+                            videoUrl[i] = urlTemp;
+                            Log.d("url 찍기", videoUrl[i]);
+                        }
+
+                        BitmapFactory.Options bmOptions;
+                        bmOptions = new BitmapFactory.Options();
+                        bmOptions.inSampleSize = 1;
+                        imageUrl = imageUrl.substring(1, imageUrl.length() - 1);
+
+                        OpenHttpConnection openHttpConnection = new OpenHttpConnection();
+                        openHttpConnection.execute(top_image, imageUrl);
+
 
                     }
-
                 }
 
                 @Override
                 public void onFailure(Call<ResponseInfo> call, Throwable t) {
                     Toast.makeText(getApplicationContext(), "접속 실패", Toast.LENGTH_LONG).show();
+
                 }
             });
 
@@ -211,14 +242,37 @@ public class management extends baseActivity {
                         progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                         progressBar.setIndeterminate(true);
                         progressBar.setCancelable(true);
+                        URL[] fileURL = new URL[4];
                         //url 넣기
                         //배열 상태로 들어오기 때문에 첫글자와 마지막 글자를 삭제해줘야한다 . [ ]
-                        String test = videoUrl[0].substring(1, videoUrl[0].length() - 1).trim();
-                        final String fileURL = test;
-//                        final String fileURL = "https://asdfghjkkl11.gabia.io/videos/goods/0ABCD01066643050_C.mp4";
+                        for (int i = 0; i < videoUrl.length; i++) {
+                            try {
+                                String test = videoUrl[i].substring(1, videoUrl[i].length() - 1).trim();
+                                fileURL[i] = new URL(test);
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
                         path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                        outputFile = new File(path, top_goods.getText().toString().trim() + ".mp4");
-                        videoName = top_goods.getText().toString().trim() + ".mp4";
+
+                        String childName = infoList.get(0).goodId;
+//                        if (infoList.get(i).lang.equalsIgnoreCase("한국어")) {
+//                            childName = childName + "_kor.mp4";
+//                            lang = "kor";
+//                        } else if (infoList.get(i).lang.equalsIgnoreCase("영어")) {
+//                            childName = childName + "_eng.mp4";
+//                            lang = "eng";
+//                        } else if (infoList.get(i).lang.equalsIgnoreCase("일본어")) {
+//                            childName = childName + "_jap.mp4";
+//                            lang = "jap";
+//                        } else if (infoList.get(i).lang.equalsIgnoreCase("중국어")) {
+//                            childName = childName + "_chi.mp4";
+//                            lang = "chi";
+//                        }
+                        //Ex) childName = 07088859876-bed001
+                        outputFile = new File(path, childName);
+                        videoName = childName;
 
                         if (outputFile.exists()) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(management.this);
@@ -238,7 +292,7 @@ public class management extends baseActivity {
 
                                     final DownloadFilesTask downloadFilesTask = new DownloadFilesTask(management.this);
                                     downloadFilesTask.execute(fileURL);
-
+//                                        downloadFilesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fileURL);
                                     progressBar.setOnCancelListener(new DialogInterface.OnCancelListener() {
                                         @Override
                                         public void onCancel(DialogInterface dialog) {
@@ -251,23 +305,59 @@ public class management extends baseActivity {
                         } else {
                             final DownloadFilesTask downloadTask = new DownloadFilesTask(management.this);
                             downloadTask.execute(fileURL);
+//                                downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fileURL);
 
                             progressBar.setOnCancelListener(new DialogInterface.OnCancelListener() {
                                 @Override
                                 public void onCancel(DialogInterface dialog) {
                                     downloadTask.cancel(true);
+
                                 }
                             });
+
                         }
+
+                        OutputStream outputStream = null;
+                        String dirPath = Environment.getExternalStorageDirectory().toString();
+                        File file = new File(dirPath, infoList.get(0).goodId + ".jpg");
+
+                        try {
+
+                            outputStream = new FileOutputStream(file);
+                            mSaveBm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                            outputStream.flush();
+                            outputStream.close();
+
+                            //뒤에 /test.jpg 변수명 + jpg로 변경
+                            sharedPic = BitmapFactory.decodeFile(dirPath + "/" + infoList.get(0).goodId + ".jpg");
+
+                            String image = BitMapToString(sharedPic);
+                            SharedPreferences pref = getSharedPreferences("image", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = pref.edit();
+                            editor.putString("imageStrings", image);
+
+                            editor.commit();
+
+                            Toast.makeText(getApplicationContext(), "이미지를 저장하였습니다.", Toast.LENGTH_LONG).show();
+
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+                        }
+
 
                         break;
-                    case R.id.img_down:
-                        String imgURL = videoUrl[0].substring(1, videoUrl[0].length() - 1).trim();
-                        Bitmap imgBitmap = GetImageDownload(imgURL);
-                        if (imgBitmap != null){
 
+                    case R.id.goodsInfobtn:
+                        if (infoList.size() == 0)
+                            Toast.makeText(getApplicationContext(), "검색 된 데이터가 없습니다.", Toast.LENGTH_LONG).show();
+                        else {
+                            Intent intent = new Intent(getApplicationContext(), goodsInfo.class);
+                            startActivity(intent);
                         }
-
                         break;
                 }
             }
@@ -275,11 +365,22 @@ public class management extends baseActivity {
 
 
         video_down.setOnClickListener(cl);
-        img_down.setOnClickListener(cl);
+        info_save.setOnClickListener(cl);
+
 
     }
 
-    private class DownloadFilesTask extends AsyncTask<String, String, Long> {
+
+    public String BitMapToString(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String temp = Base64.encodeToString(b, Base64.DEFAULT);
+        return temp;
+    }
+
+
+    private class DownloadFilesTask extends AsyncTask<URL, String, Long> {
 
         private Context context;
         private PowerManager.WakeLock mWakeLock;
@@ -306,7 +407,7 @@ public class management extends baseActivity {
 
         //파일 다운로드를 진행합니다.
         @Override
-        protected Long doInBackground(String... string_url) { //3
+        protected Long doInBackground(URL... urls) { //3
             int count;
             long FileSize = -1;
             InputStream input = null;
@@ -314,53 +415,73 @@ public class management extends baseActivity {
             URLConnection connection = null;
 
             try {
-                URL url = new URL(string_url[0]);
-                connection = url.openConnection();
-                connection.connect();
+                int arr_size = urls.length;
+                for (int i = 0; i < arr_size; i++) {
+                    String childName = infoList.get(0).goodId;
+//                    URL url = new URL(string_url.);
+//
+                    if (infoList.get(i).lang.equalsIgnoreCase("한국어")) {
+                        childName = childName + "_kor.mp4";
+                        lang = "kor";
+                    } else if (infoList.get(i).lang.equalsIgnoreCase("영어")) {
+                        childName = childName + "_eng.mp4";
+                        lang = "eng";
+                    } else if (infoList.get(i).lang.equalsIgnoreCase("일본어")) {
+                        childName = childName + "_jap.mp4";
+                        lang = "jap";
+                    } else if (infoList.get(i).lang.equalsIgnoreCase("중국어")) {
+                        childName = childName + "_chi.mp4";
+                        lang = "chi";
+                    }
 
 
-                //파일 크기를 가져옴
-                FileSize = connection.getContentLength();
+                    connection = urls[i].openConnection();
+                    connection.connect();
 
-                //URL 주소로부터 파일다운로드하기 위한 input stream
-                input = new BufferedInputStream(url.openStream(), 8192);
+
+                    //파일 크기를 가져옴
+                    FileSize = connection.getContentLength();
+
+                    //URL 주소로부터 파일다운로드하기 위한 input stream
+                    input = new BufferedInputStream(urls[i].openStream(), 8192);
 //                Context c = getApplication();
 //                path = c.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-                path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                outputFile = new File(path, videoName); //파일명까지 포함함 경로의 File 객체 생성
+                    path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                    outputFile = new File(path, childName); //파일명까지 포함함 경로의 File 객체 생성
 
-                // SD카드에 저장하기 위한 Output stream
-                output = new FileOutputStream(outputFile);
+                    // SD카드에 저장하기 위한 Output stream
+                    output = new FileOutputStream(outputFile);
 
 
-                byte data[] = new byte[1024];
-                long downloadedSize = 0;
-                while ((count = input.read(data)) != -1) {
-                    //사용자가 BACK 버튼 누르면 취소가능
-                    if (isCancelled()) {
-                        input.close();
-                        return Long.valueOf(-1);
+                    byte data[] = new byte[1024];
+                    long downloadedSize = 0;
+                    while ((count = input.read(data)) != -1) {
+                        //사용자가 BACK 버튼 누르면 취소가능
+                        if (isCancelled()) {
+                            input.close();
+                            return Long.valueOf(-1);
+                        }
+
+                        downloadedSize += count;
+
+                        if (FileSize > 0) {
+                            float per = ((float) downloadedSize / FileSize) * 100;
+                            String str = "Downloaded " + downloadedSize + "KB / " + FileSize + "KB (" + (int) per + "%)";
+                            publishProgress("" + (int) ((downloadedSize * 100) / FileSize), str);
+
+                        }
+                        //파일에 데이터를 기록합니다.
+                        output.write(data, 0, count);
+
                     }
 
-                    downloadedSize += count;
+                    // Flush output
+                    output.flush();
 
-                    if (FileSize > 0) {
-                        float per = ((float) downloadedSize / FileSize) * 100;
-                        String str = "Downloaded " + downloadedSize + "KB / " + FileSize + "KB (" + (int) per + "%)";
-                        publishProgress("" + (int) ((downloadedSize * 100) / FileSize), str);
-
-                    }
-
-                    //파일에 데이터를 기록합니다.
-                    output.write(data, 0, count);
+                    // Close streams
+                    output.close();
+                    input.close();
                 }
-                // Flush output
-                output.flush();
-
-                // Close streams
-                output.close();
-                input.close();
-
 
             } catch (Exception e) {
                 Log.e("Error: ", e.getMessage());
@@ -471,23 +592,39 @@ public class management extends baseActivity {
     }
 
 
-    private Bitmap GetImageDownload(String imageURL) {
-        Bitmap imgBitmap = null;
-        try {
-            URL url = new URL(imageURL);
-            URLConnection conn = url.openConnection();
-            conn.connect();
+    private class OpenHttpConnection extends AsyncTask<Object, Void, Bitmap> {
+        private ImageView bImageView;
 
-            int imageSize = conn.getContentLength();
-            BufferedInputStream inputStream = new BufferedInputStream(conn.getInputStream(), imageSize);
-            imgBitmap = BitmapFactory.decodeStream(inputStream);
+        @Override
+        protected Bitmap doInBackground(Object... objects) {
+            Bitmap mbitmap = null;
+            bImageView = (ImageView) objects[0];
+            String url = (String) objects[1];
+            InputStream in = null;
+            try {
+                in = new java.net.URL(url).openStream();
+                mbitmap = BitmapFactory.decodeStream(in);
+                in.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-            inputStream.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            return mbitmap;
         }
-        return imgBitmap;
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            mSaveBm = bitmap;
+        }
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
 }
 

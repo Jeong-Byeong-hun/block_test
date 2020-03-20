@@ -64,8 +64,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="기기 비밀번호 4자리 입력"
-                android:maxLength="4"
+                android:hint="기기 비밀번호 입력"
+                android:maxLength="16"
                 android:password="true"
                 android:textSize="50dp" />
 

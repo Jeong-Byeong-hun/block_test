@@ -3,11 +3,19 @@ package com.example.block_test;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import static com.example.block_test.firstPage.isFirst;
 
 public class MainActivity extends baseActivity {
 
@@ -15,6 +23,7 @@ public class MainActivity extends baseActivity {
     Button bot_kor, bot_eng, bot_jap, bot_chi;
     LinearLayout linearLayout;
     View.OnClickListener clickListener;
+    static ImageView top_image;
 
 
     protected void init() {
@@ -32,13 +41,20 @@ public class MainActivity extends baseActivity {
         bot_jap = findViewById(R.id.bottom_btn_jap);
         bot_chi = findViewById(R.id.bottom_btn_chi);
 
-
+        top_image = findViewById(R.id.top_imageView);
 
         firstPage first = new firstPage();
 
         first.callBack(firstPage.storeNumber,getApplication());
 
+        //사진 고정하는 부분
+        if (!isFirst) {
+            SharedPreferences pref = getSharedPreferences("image",MODE_PRIVATE);
+            String image = pref.getString("imageStrings","");
+            Bitmap bitmap = StringToBitMap(image);
 
+            top_image.setImageBitmap(bitmap);
+        }
 
 
         linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
@@ -53,38 +69,38 @@ public class MainActivity extends baseActivity {
         clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),video.class);
+                Intent intent = new Intent(getApplicationContext(),store.class);
                 switch (v.getId()) {
                     case R.id.top_btn_kor :
-                        intent.putExtra("top_kor","한국어");
+                        intent.putExtra("videoForm","_kor.mp4");
                         startActivity(intent);
                         break;
                     case R.id.top_btn_eng :
-                        intent.putExtra("top_eng","English");
+                        intent.putExtra("videoForm","_eng.mp4");
                         startActivity(intent);
                         break;
                     case R.id.top_btn_jap :
-                        intent.putExtra("top_jap","일본어페이지");
+                        intent.putExtra("videoForm","_jap.mp4");
                         startActivity(intent);
                         break;
                     case R.id.top_btn_chi :
-                        intent.putExtra("top_chi","중국어페이지");
+                        intent.putExtra("videoForm","_chi.mp4");
                         startActivity(intent);
                         break;
                     case R.id.bottom_btn_kor :
-                        intent.putExtra("bot_kor","한국어 페이지");
+                        intent.putExtra("videoForm","_kor.mp4");
                         startActivity(intent);
                         break;
                     case R.id.bottom_btn_eng :
-                        intent.putExtra("bot_eng","영어 페이지");
+                        intent.putExtra("videoForm","_eng.mp4");
                         startActivity(intent);
                         break;
                     case R.id.bottom_btn_jap :
-                        intent.putExtra("bot_jap","일본어 페이지");
+                        intent.putExtra("videoForm","_eng.mp4");
                         startActivity(intent);
                         break;
                     case R.id.bottom_btn_chi :
-                        intent.putExtra("bot_chi","중국어 페이지");
+                        intent.putExtra("videoForm","_chi.mp4");
                         startActivity(intent);
                         break;
                 }
@@ -104,5 +120,16 @@ public class MainActivity extends baseActivity {
 
     }
 
+    public Bitmap StringToBitMap(String encodedString){
+        try {
+            byte[] encodeByte = Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0 , encodeByte.length);
+            return bitmap;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 
 }

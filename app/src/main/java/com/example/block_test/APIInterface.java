@@ -17,4 +17,10 @@ public interface APIInterface {
     @POST("api/good")
     Call<ResponseInfo> downInfo(@Field("auth") String auth, @Field("goodsId") String goodsId);
 
+    @FormUrlEncoded
+    @POST("api/log")
+    Call<ResponseLog> postLog(@Field("auth") String auth, @Field("goodsId") String goodsId,
+                              @Field("storeId") String storeId, @Field("goodsPrice") String goodsPrice,
+                              @Field("memo") String memo);
+
 }

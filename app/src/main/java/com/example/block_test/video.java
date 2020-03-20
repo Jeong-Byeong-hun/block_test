@@ -18,7 +18,7 @@ public class video extends baseActivity {
         final VideoView videoView = (VideoView) findViewById(R.id.video);
 
         Intent intent = getIntent();
-
+        String videoForm = intent.getStringExtra("videoForm");
         String path = Environment.getExternalStorageDirectory()
                 .getAbsolutePath();
 
@@ -33,7 +33,7 @@ public class video extends baseActivity {
 
         videoView.setMediaController(mediaController);
 
-        videoView.setVideoPath(path+"/Download/"+videoName);
+        videoView.setVideoPath(path+"/Download/"+videoName + videoForm);
 //        videoView.setVideoURI(video);
 
         videoView.requestFocus();
@@ -43,8 +43,7 @@ public class video extends baseActivity {
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener()  {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                Intent intent = new Intent(getApplicationContext(),store.class);
-                startActivity(intent);
+                finish();
             }
         });
 

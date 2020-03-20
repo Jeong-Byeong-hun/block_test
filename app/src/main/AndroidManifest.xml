@@ -48,6 +48,9 @@
             android:theme="@style/Transparent"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|adjustPan"/>
+        <activity android:name=".goodsInfo"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize|adjustPan"/>
         <provider
             android:authorities="com.example.block_test.provider"
             android:name="androidx.core.content.FileProvider"

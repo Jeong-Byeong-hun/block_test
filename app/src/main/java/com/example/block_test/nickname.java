@@ -9,12 +9,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import static com.example.block_test.firstPage.isFirst;
+
 public class nickname extends baseActivity {
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     EditText top_nick, bot_nick;
     Button next;
-    static String pr_nick1,pr_nick2;
+    static String pr_nick1, pr_nick2;
 
     public void init() {
         setContentView(R.layout.activity_nickname);
@@ -26,9 +28,9 @@ public class nickname extends baseActivity {
 
         pref = getSharedPreferences(PREFERENCE, MODE_PRIVATE);
 
-        pr_nick1 = pref.getString("topnick","이름없음");
-        pr_nick2 = pref.getString("botnick","이름없음");
-        Log.d("debug",pr_nick1 + "       " + pr_nick2);
+        pr_nick1 = pref.getString("topnick", "이름없음");
+        pr_nick2 = pref.getString("botnick", "이름없음");
+        Log.d("debug", pr_nick1 + "       " + pr_nick2);
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,11 +43,17 @@ public class nickname extends baseActivity {
                     pr_nick1 = top_nick.getText().toString().trim();
                     pr_nick2 = bot_nick.getText().toString().trim();
                     editor.putString("topnick", pr_nick1);
-                    editor.putString("botnick",pr_nick2);
+                    editor.putString("botnick", pr_nick2);
                     editor.commit();
-                    Log.d("debug",pr_nick1 + "       " + pr_nick2);
-                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                    startActivity(intent);
+                    Log.d("debug", pr_nick1 + "       " + pr_nick2);
+                    if (!isFirst) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(),management.class);
+                        startActivity(intent);
+                    }
+
                     finish();
                 }
             }

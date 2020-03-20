@@ -17,12 +17,12 @@
         android:background="@drawable/under_stroke">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/top_imageView"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="8dp"
-            app:srcCompat="@drawable/abcd01066643050"
+            app:srcCompat="@drawable/abcd01066643050a"
             android:scaleType="fitCenter" />
 
         <LinearLayout

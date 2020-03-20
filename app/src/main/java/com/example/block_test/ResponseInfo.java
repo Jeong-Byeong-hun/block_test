@@ -2,16 +2,17 @@ package com.example.block_test;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ResponseInfo {
+public class ResponseInfo implements Serializable {
     @SerializedName("code")
     public String code;
 
     @SerializedName("data")
     List<ResponseInfo.data> data;
 
-    public class data {
+    public class data implements Serializable{
         @SerializedName("lang")
         public String lang;
         @SerializedName("goodId")
@@ -24,6 +25,8 @@ public class ResponseInfo {
         public String category;
         @SerializedName("size")
         public String size;
+        @SerializedName("color")
+        public String color;
         @SerializedName("imgPaths")
         public List<String> imgPaths;
         @SerializedName("mp4Paths")

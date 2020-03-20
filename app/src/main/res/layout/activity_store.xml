@@ -13,12 +13,12 @@
         android:background="@drawable/under_stroke">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/top_imageView"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_margin="10dp"
-            app:srcCompat="@drawable/abcd01066643050" />
+            app:srcCompat="@drawable/abcd01066643050a" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -169,7 +169,7 @@
         android:layout_weight="1">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/bot_imageView"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

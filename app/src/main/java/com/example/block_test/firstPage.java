@@ -29,9 +29,9 @@ public class firstPage extends baseActivity {
     EditText  store,pw;
     SharedPreferences pref;
     SharedPreferences.Editor editor;
-    Boolean isFirst;
+    static Boolean isFirst;
     static String storeNumber;  // 매장 ID
-    static String password;     //기기에서 쓰는 비밀번호 4자리
+    static String password;     // 비밀번호
     APIInterface apiInterface;
 
     @Override
@@ -64,14 +64,10 @@ public class firstPage extends baseActivity {
                             password = pw.getText().toString().trim();
                             editor.putString("storeNumber", storeNumber);
                             editor.putString("password",password);
-                            editor.commit();
-                            callBack(store.getText().toString(),getApplication());
                             editor.putBoolean("isFirst", false);
                             editor.commit();
+                            callBack(store.getText().toString(),getApplication());
 
-                            Intent intent = new Intent(getApplicationContext(), nickname.class);
-                            startActivity(intent);
-                            finish();
                         }
                     });
                 } else {
@@ -109,6 +105,9 @@ public class firstPage extends baseActivity {
 //                                goodsList.add(goods.goodsTitle);
                                 goodsList.add(goods.goodsId);
                             }
+                            Intent intent = new Intent(getApplicationContext(), nickname.class);
+                            startActivity(intent);
+                            finish();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
