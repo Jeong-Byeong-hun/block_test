@@ -11,11 +11,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DecimalFormat;
+
 import static com.example.block_test.firstPage.isFirst;
 
 public class store extends baseActivity {
 
-    TextView top_price, sale_price, top_mileage, top_delivery, top_nprice, top_sprice;
+    TextView top_price, sale_price, top_mileage, top_delivery, top_nprice, top_sprice,top_name,top_color,top_size;
     TextView bot_price, bot_sale_price, bot_mileage, bot_delivery, bot_nprice, bot_sprice;
 
     ImageView top_img, bot_img;
@@ -31,6 +33,9 @@ public class store extends baseActivity {
         top_delivery = findViewById(R.id.delivery);
         top_nprice = findViewById(R.id.nprice);
         top_sprice = findViewById(R.id.sprice);
+        top_name = findViewById(R.id.top_name);
+        top_color = findViewById(R.id.top_color);
+        top_size = findViewById(R.id.top_size);
 
         bot_price = findViewById(R.id.bot_Price);
         bot_sale_price = findViewById(R.id.bot_sale_Price);
@@ -47,6 +52,28 @@ public class store extends baseActivity {
 
         top_price.setPaintFlags(top_price.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         bot_price.setPaintFlags(bot_price.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        top_nprice.setPaintFlags(top_nprice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+        DecimalFormat format = new DecimalFormat("###,###");
+
+        SharedPreferences infoPreferences = getSharedPreferences("info",MODE_PRIVATE);
+        top_name.setText(infoPreferences.getString("kName",""));
+        top_price.setText(format.format(Integer.parseInt(infoPreferences.getString("kConsumer",""))));
+        top_color.setText(infoPreferences.getString("kColor",""));
+        top_size.setText(infoPreferences.getString("kSize",""));
+        sale_price.setText(format.format(Integer.parseInt(infoPreferences.getString("kSell",""))));
+
+        top_nprice.setText("정상가 : " + format.format(Integer.parseInt(infoPreferences.getString("kConsumer",""))) );
+        top_sprice.setText("판매가 : " + format.format(Integer.parseInt(infoPreferences.getString("kSell",""))) );
+
+
+//        editor.putString("kName",str_kName);
+//        editor.putString("kConsumer",str_kConsumer);
+//        editor.putString("kSell",str_kSell);
+//        editor.putString("kSize",str_kSize);
+//        editor.putString("kColor",str_kColor);
+//        editor.putString("kMemo",str_kMemo);
+
 
         if (!isFirst) {
             SharedPreferences pref = getSharedPreferences("image",MODE_PRIVATE);
