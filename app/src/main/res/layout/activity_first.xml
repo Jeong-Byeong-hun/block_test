@@ -9,7 +9,7 @@
         android:layout_height="80dp"
         android:background="@color/colorPrimary"
         android:gravity="center"
-        android:text="매장 아이디 등록"
+        android:text="매장 기기 등록"
         android:textSize="30dp" />
 
     <LinearLayout
@@ -30,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
-                android:text="매장 아이디 : "
+                android:text="아이디 : "
                 android:textColor="@color/black"
                 android:textSize="50dp" />
 
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="매장 번호 입력"
+                android:hint="아이디 입력"
                 android:inputType="textPersonName"
                 android:textSize="50dp" />
         </LinearLayout>
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="50dp"
-                android:text="기기 비밀번호 : "
+                android:text="비밀번호 : "
                 android:textColor="@color/black"
                 android:textSize="50dp" />
 
@@ -64,20 +64,45 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="기기 비밀번호 입력"
+                android:hint="비밀번호 입력"
                 android:maxLength="16"
                 android:password="true"
                 android:textSize="50dp" />
 
 
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+
+            <TextView
+                android:id="@+id/tv3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:text="기기 이름 : "
+                android:textColor="@color/black"
+                android:textSize="50dp" />
+
+            <EditText
+                android:id="@+id/devName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="기기 이름 입력"
+                android:textSize="50dp" />
+
+        </LinearLayout>
+
 <TextView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textSize="30dp"
     android:textColor="@color/black"
     android:layout_gravity="center"
-    android:text="이 페이지는 최초 실행시에만 나오는 페이지입니다. \n매장 아이디와 비밀번호를 신중히 입력해주세요."/>
+    android:text="이 페이지는 최초 실행시에만 나오는 페이지입니다. \n매장 아이디와 비밀번호를 신중히 입력해주세요.\n기기 이름은 바꿀 수 없습니다."/>
     </LinearLayout>
 
     <LinearLayout

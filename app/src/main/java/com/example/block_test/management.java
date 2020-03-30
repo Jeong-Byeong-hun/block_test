@@ -1,6 +1,7 @@
 package com.example.block_test;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -13,19 +14,25 @@ import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.ActionProvider;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -56,26 +63,34 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.block_test.MainActivity.bot_image;
 import static com.example.block_test.MainActivity.top_image;
 
-public class management extends baseActivity {
-    static String videoName;
-    static List<ResponseInfo.data> infoList = null;
 
+public class management extends baseActivity {
+    static String videoName, videoName2;
+    static List<ResponseInfo.data> infoList = null;
+    static List<ResponseInfo.data> infoList2 = null;
+    static List<String> goodsList = new ArrayList<>();
+    static List<String> goodsList2 = new ArrayList<>();
     Bitmap mSaveBm, sharedPic;
     AutoCompleteTextView top_auto, bot_auto;
     TextView storeId;
-    EditText top_consumer, top_sell, top_size, top_memo, top_goods, top_color;
-    EditText bot_consumer, bot_sell, bot_size, bot_memo, bot_goods;
-    Button top_search, bot_search, video_down, info_save;
-    APIInterface apiInterface2;
+    Button top_search, bot_search, video_down, info_save, video_down2, info_save2;
+    APIInterface apiInterface2, apiInterface;
     ScrollView scrollView;
     LinearLayout linearLayout;
     View.OnClickListener cl;
     String lang = null;
     String[] videoUrl;
     String imageUrl = null;
-
+    String goodsIdVideo = null;
+    String[] videoUrl2;
+    String imageUrl2 = null;
+    SharedPreferences video;
+    SharedPreferences.Editor videoedit;
+    SharedPreferences pref;
+    String id, password, mac;
     private ProgressDialog progressBar;
 
     static final int PERMISSION_REQUEST_CODE = 1;
@@ -112,35 +127,109 @@ public class management extends baseActivity {
 
         info_save = findViewById(R.id.goodsInfobtn);
         video_down = findViewById(R.id.video_down);
+
+        //우측 레이아웃 버튼
+        info_save2 = findViewById(R.id.goodsInfobtn2);
+        video_down2 = findViewById(R.id.video_down2);
+
+
         scrollView = findViewById(R.id.scrView);
         linearLayout = findViewById(R.id.manageLine);
         storeId = findViewById(R.id.store_num);
-        top_goods = findViewById(R.id.top_goodsName);
-        bot_goods = findViewById(R.id.bot_goodsName);
+
 
         top_auto = findViewById(R.id.pro_auto);
         bot_auto = findViewById(R.id.pro_auto2);
 
-        top_consumer = findViewById(R.id.top_consumer);
-        top_sell = findViewById(R.id.top_sell);
-        top_size = findViewById(R.id.top_size);
-        top_memo = findViewById(R.id.top_memo);
-        top_color = findViewById(R.id.top_color);
-
-        bot_consumer = findViewById(R.id.bot_consumer);
-        bot_sell = findViewById(R.id.bot_sell);
-        bot_size = findViewById(R.id.bot_size);
-        bot_memo = findViewById(R.id.bot_memo);
 
         top_search = findViewById(R.id.top_search);
         bot_search = findViewById(R.id.bot_search);
 
         storeId.setText(firstPage.storeNumber);
 
-        top_auto.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, firstPage.goodsList));
 
-        bot_auto.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, firstPage.goodsList));
+        pref = getSharedPreferences("auth", MODE_PRIVATE);
 
+        id = pref.getString("storeNumber", "");
+        password = pref.getString("password", "");
+        mac = pref.getString("macAddress", "02:00:00:00:00:00");
+
+        top_auto.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(top_auto.getWindowToken(), 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        bot_auto.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(bot_auto.getWindowToken(), 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        if (id == null || id.equalsIgnoreCase("")) {
+            Toast.makeText(getApplicationContext(), "아이디가 없습니다.", Toast.LENGTH_LONG).show();
+        } else if (password == null || password.equalsIgnoreCase("")) {
+            Toast.makeText(getApplicationContext(), "비밀번호가 없습니다.", Toast.LENGTH_LONG).show();
+        } else if (mac == null || mac.equalsIgnoreCase("")) {
+            Toast.makeText(getApplicationContext(), "맥주소가 없습니다.", Toast.LENGTH_LONG).show();
+        } else {
+            apiInterface = APIClient.getClient().create(APIInterface.class);
+            Call<ResponseData> dataCall = apiInterface.checkAuth(id, password, mac);
+
+            dataCall.enqueue(new Callback<ResponseData>() {
+                @Override
+                public void onResponse(Call<ResponseData> call, Response<ResponseData> response) {
+                    try {
+                        ResponseData data1 = response.body();
+                        List<ResponseData.goods> dataList = data1.data;
+                        if (response.code() == 403) {
+                            Toast.makeText(getApplicationContext(), "권한없음", Toast.LENGTH_SHORT).show();
+                        } else if (response.code() == 300) {
+                            Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_LONG).show();
+                        } else {
+                            for (ResponseData.goods goods : dataList) {
+                                goodsList.add(goods.goodsId);
+                                goodsList2.add(goods.goodsId);
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.e("responseError", e.toString());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseData> call, Throwable t) {
+                    Toast.makeText(getApplicationContext(), "접속 실패", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        }
+
+
+        top_auto.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, goodsList));
+
+        bot_auto.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_dropdown_item_1line, goodsList2));
+
+        //자동완성 어댑터
+
+
+        video = getSharedPreferences("video", MODE_PRIVATE);
+        videoedit = video.edit();
+
+        videoName = video.getString("topVideo", "");
+        videoName2 = video.getString("botVideo", "");
 
         if (!hasPermissions(PERMISSIONS)) { //퍼미션 허가를 했었는지 여부를 확인
             requestNecessaryPermissions(PERMISSIONS);//퍼미션 허가안되어 있다면 사용자에게 요청
@@ -153,7 +242,7 @@ public class management extends baseActivity {
 
             apiInterface2 = APIClient.getClient().create(APIInterface.class);
 
-            Call<ResponseInfo> call2 = apiInterface2.downInfo(storeId.getText().toString().trim(), top_auto.getText().toString().trim());
+            Call<ResponseInfo> call2 = apiInterface2.downInfo(id, password, mac, top_auto.getText().toString().trim());
             call2.enqueue(new Callback<ResponseInfo>() {
                 @Override
                 public void onResponse(Call<ResponseInfo> call, Response<ResponseInfo> response) {
@@ -162,13 +251,11 @@ public class management extends baseActivity {
                     if (infoList.size() == 0) {
                         Toast.makeText(getApplicationContext(), "제품 번호가 잘못되었습니다.", Toast.LENGTH_LONG).show();
                     } else {
-                        top_goods.setText(infoList.get(0).goodTitle);
-                        top_consumer.setText(infoList.get(0).price + "");
-                        top_size.setText(infoList.get(0).size);
-                        top_color.setText(infoList.get(0).color);
+                        Toast.makeText(getApplicationContext(), "검색되었습니다. 영상을 다운로드 해주세요.", Toast.LENGTH_LONG).show();
 
                         imageUrl = infoList.get(0).imgPaths.toString();
                         videoUrl = new String[infoList.size()];
+                        goodsIdVideo = infoList.get(0).goodId;
 
 
                         for (int i = 0; i < infoList.size(); i++) {
@@ -208,19 +295,40 @@ public class management extends baseActivity {
 
             apiInterface2 = APIClient.getClient().create(APIInterface.class);
 
-            Call<ResponseInfo> call2 = apiInterface2.downInfo(storeId.getText().toString().trim(), bot_auto.getText().toString().trim());
+            Call<ResponseInfo> call2 = apiInterface2.downInfo(id, password, mac, bot_auto.getText().toString().trim());
             call2.enqueue(new Callback<ResponseInfo>() {
                 @Override
                 public void onResponse(Call<ResponseInfo> call, Response<ResponseInfo> response) {
                     ResponseInfo responseInfo = response.body();
-                    List<ResponseInfo.data> infoList = responseInfo.data;
+                    infoList2 = responseInfo.data;
 
-                    bot_goods.setText(infoList.get(0).goodTitle);
-                    bot_sell.setText(infoList.get(0).price + "");
-                    bot_size.setText(infoList.get(0).size);
+                    if (infoList2.size() == 0) {
+                        Toast.makeText(getApplicationContext(), "제품 번호가 잘못되었습니다.", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "검색되었습니다. 영상을 다운로드 해주세요.", Toast.LENGTH_LONG).show();
+                        imageUrl2 = infoList2.get(0).imgPaths.toString();
+                        videoUrl2 = new String[infoList2.size()];
+                        goodsIdVideo = infoList2.get(0).goodId;
+
+                        for (int i = 0; i < infoList2.size(); i++) {
+                            String urlTemp;
+                            urlTemp = infoList2.get(i).mp4Paths.toString();
+                            videoUrl2[i] = urlTemp;
+                            Log.d("url 찍기", videoUrl2[i]);
+                        }
+
+                    }
 
 
+                    BitmapFactory.Options bmOptions;
+                    bmOptions = new BitmapFactory.Options();
+                    bmOptions.inSampleSize = 1;
+                    imageUrl2 = imageUrl2.substring(1, imageUrl2.length() - 1);
+
+                    OpenHttpConnection openHttpConnection = new OpenHttpConnection();
+                    openHttpConnection.execute(bot_image, imageUrl2);
                 }
+
 
                 @Override
                 public void onFailure(Call<ResponseInfo> call, Throwable t) {
@@ -237,18 +345,145 @@ public class management extends baseActivity {
 
                 switch (v.getId()) {
                     case R.id.video_down:
+
+                        if (TextUtils.isEmpty(top_auto.getText().toString())) {
+                            Toast.makeText(getApplicationContext(), "검색을 먼저 해주세요.", Toast.LENGTH_LONG).show();
+                        } else {
+                            progressBar = new ProgressDialog(management.this);
+                            progressBar.setMessage("다운로드중");
+                            progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                            progressBar.setIndeterminate(true);
+                            progressBar.setCancelable(true);
+                            URL[] fileURL = new URL[4];
+                            //url 넣기
+                            //배열 상태로 들어오기 때문에 첫글자와 마지막 글자를 삭제해줘야한다 . [ ]
+                            for (int i = 0; i < videoUrl.length; i++) {
+                                try {
+                                    String test = videoUrl[i].substring(1, videoUrl[i].length() - 1).trim();
+                                    fileURL[i] = new URL(test);
+                                } catch (MalformedURLException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+                            String childName = infoList.get(0).goodId;
+
+                            //Ex) childName = 07088859876-bed001
+                            outputFile = new File(path, childName);
+                            videoName = childName;
+                            videoedit.putString("topVideo", videoName);
+                            videoedit.commit();
+
+
+                            if (outputFile.exists()) {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(management.this);
+                                builder.setTitle("파일 다운로드");
+                                builder.setMessage("이미 SD 카드에 존재합니다. 다시 다운로드 받을까요 ?");
+                                builder.setNegativeButton("아니오",
+                                        new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Toast.makeText(getApplicationContext(), "다운로드를 하지 않았습니다.", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        outputFile.delete();
+
+                                        final DownloadFilesTask downloadFilesTask = new DownloadFilesTask(management.this);
+                                        downloadFilesTask.execute(fileURL);
+//                                        downloadFilesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fileURL);
+                                        progressBar.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                            @Override
+                                            public void onCancel(DialogInterface dialog) {
+                                                downloadFilesTask.cancel(true);
+                                            }
+                                        });
+                                    }
+                                });
+                                builder.show();
+                            } else {
+                                final DownloadFilesTask downloadTask = new DownloadFilesTask(management.this);
+                                downloadTask.execute(fileURL);
+//                                downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fileURL);
+
+                                progressBar.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                    @Override
+                                    public void onCancel(DialogInterface dialog) {
+                                        downloadTask.cancel(true);
+
+                                    }
+                                });
+
+                            }
+
+                            OutputStream outputStream = null;
+                            String dirPath = Environment.getExternalStorageDirectory().toString();
+                            File file = new File(dirPath, infoList.get(0).goodId + ".jpg");
+
+                            try {
+
+                                outputStream = new FileOutputStream(file);
+                                mSaveBm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                                outputStream.flush();
+                                outputStream.close();
+
+                                //뒤에 /test.jpg 변수명 + jpg로 변경
+                                sharedPic = BitmapFactory.decodeFile(dirPath + "/" + infoList.get(0).goodId + ".jpg");
+
+                                String image = BitMapToString(sharedPic);
+                                SharedPreferences pref = getSharedPreferences("image", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.putString("imageStrings", image);
+
+                                editor.commit();
+
+//                                top_image.setImageBitmap(mSaveBm);
+
+
+                                Toast.makeText(getApplicationContext(), "이미지를 저장하였습니다.", Toast.LENGTH_LONG).show();
+
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                                Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                        break;
+
+                    case R.id.goodsInfobtn:
+                        if (infoList.size() == 0)
+                            Toast.makeText(getApplicationContext(), "검색 된 데이터가 없습니다.", Toast.LENGTH_LONG).show();
+                        else {
+                            Intent intent = new Intent(getApplicationContext(), goodsInfo.class);
+                            startActivity(intent);
+                        }
+                        break;
+
+
+                    case R.id.video_down2:
+
                         progressBar = new ProgressDialog(management.this);
                         progressBar.setMessage("다운로드중");
                         progressBar.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                         progressBar.setIndeterminate(true);
                         progressBar.setCancelable(true);
-                        URL[] fileURL = new URL[4];
+                        URL[] fileURL2 = new URL[4];
+
                         //url 넣기
                         //배열 상태로 들어오기 때문에 첫글자와 마지막 글자를 삭제해줘야한다 . [ ]
-                        for (int i = 0; i < videoUrl.length; i++) {
+
+                        for (int i = 0; i < videoUrl2.length; i++) {
                             try {
-                                String test = videoUrl[i].substring(1, videoUrl[i].length() - 1).trim();
-                                fileURL[i] = new URL(test);
+                                String test = videoUrl2[i].substring(1, videoUrl2[i].length() - 1).trim();
+                                Log.i("testVideo", test);
+                                fileURL2[i] = new URL(test);
                             } catch (MalformedURLException e) {
                                 e.printStackTrace();
                             }
@@ -256,23 +491,14 @@ public class management extends baseActivity {
 
                         path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 
-                        String childName = infoList.get(0).goodId;
-//                        if (infoList.get(i).lang.equalsIgnoreCase("한국어")) {
-//                            childName = childName + "_kor.mp4";
-//                            lang = "kor";
-//                        } else if (infoList.get(i).lang.equalsIgnoreCase("영어")) {
-//                            childName = childName + "_eng.mp4";
-//                            lang = "eng";
-//                        } else if (infoList.get(i).lang.equalsIgnoreCase("일본어")) {
-//                            childName = childName + "_jap.mp4";
-//                            lang = "jap";
-//                        } else if (infoList.get(i).lang.equalsIgnoreCase("중국어")) {
-//                            childName = childName + "_chi.mp4";
-//                            lang = "chi";
-//                        }
+                        String childName2 = infoList2.get(0).goodId;
+
                         //Ex) childName = 07088859876-bed001
-                        outputFile = new File(path, childName);
-                        videoName = childName;
+                        outputFile = new File(path, childName2);
+                        videoName2 = childName2;
+                        videoedit.putString("botVideo", videoName2);
+                        videoedit.commit();
+
 
                         if (outputFile.exists()) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(management.this);
@@ -290,53 +516,56 @@ public class management extends baseActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     outputFile.delete();
 
-                                    final DownloadFilesTask downloadFilesTask = new DownloadFilesTask(management.this);
-                                    downloadFilesTask.execute(fileURL);
+                                    final DownloadFilesTask downloadFilesTask2 = new DownloadFilesTask(management.this);
+                                    downloadFilesTask2.execute(fileURL2);
 //                                        downloadFilesTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fileURL);
                                     progressBar.setOnCancelListener(new DialogInterface.OnCancelListener() {
                                         @Override
                                         public void onCancel(DialogInterface dialog) {
-                                            downloadFilesTask.cancel(true);
+                                            downloadFilesTask2.cancel(true);
                                         }
                                     });
                                 }
                             });
                             builder.show();
                         } else {
-                            final DownloadFilesTask downloadTask = new DownloadFilesTask(management.this);
-                            downloadTask.execute(fileURL);
+                            final DownloadFilesTask downloadTask2 = new DownloadFilesTask(management.this);
+                            downloadTask2.execute(fileURL2);
 //                                downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,fileURL);
 
                             progressBar.setOnCancelListener(new DialogInterface.OnCancelListener() {
                                 @Override
                                 public void onCancel(DialogInterface dialog) {
-                                    downloadTask.cancel(true);
+                                    downloadTask2.cancel(true);
 
                                 }
                             });
 
                         }
 
-                        OutputStream outputStream = null;
-                        String dirPath = Environment.getExternalStorageDirectory().toString();
-                        File file = new File(dirPath, infoList.get(0).goodId + ".jpg");
+                        OutputStream outputStream2 = null;
+                        String dirPath2 = Environment.getExternalStorageDirectory().toString();
+                        File file2 = new File(dirPath2, infoList2.get(0).goodId + ".jpg");
 
                         try {
 
-                            outputStream = new FileOutputStream(file);
-                            mSaveBm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                            outputStream.flush();
-                            outputStream.close();
+                            outputStream2 = new FileOutputStream(file2);
+                            mSaveBm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream2);
+                            outputStream2.flush();
+                            outputStream2.close();
 
                             //뒤에 /test.jpg 변수명 + jpg로 변경
-                            sharedPic = BitmapFactory.decodeFile(dirPath + "/" + infoList.get(0).goodId + ".jpg");
+                            sharedPic = BitmapFactory.decodeFile(dirPath2 + "/" + infoList2.get(0).goodId + ".jpg");
 
                             String image = BitMapToString(sharedPic);
                             SharedPreferences pref = getSharedPreferences("image", MODE_PRIVATE);
                             SharedPreferences.Editor editor = pref.edit();
-                            editor.putString("imageStrings", image);
+                            editor.putString("imageStrings2", image);
 
                             editor.commit();
+
+//                                    bot_image.setImageBitmap(mSaveBm);
+
 
                             Toast.makeText(getApplicationContext(), "이미지를 저장하였습니다.", Toast.LENGTH_LONG).show();
 
@@ -347,15 +576,12 @@ public class management extends baseActivity {
                             e.printStackTrace();
                             Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG).show();
                         }
-
-
                         break;
-
-                    case R.id.goodsInfobtn:
-                        if (infoList.size() == 0)
+                    case R.id.goodsInfobtn2:
+                        if (infoList2.size() == 0)
                             Toast.makeText(getApplicationContext(), "검색 된 데이터가 없습니다.", Toast.LENGTH_LONG).show();
                         else {
-                            Intent intent = new Intent(getApplicationContext(), goodsInfo.class);
+                            Intent intent = new Intent(getApplicationContext(), goodsInfo2.class);
                             startActivity(intent);
                         }
                         break;
@@ -366,7 +592,8 @@ public class management extends baseActivity {
 
         video_down.setOnClickListener(cl);
         info_save.setOnClickListener(cl);
-
+        video_down2.setOnClickListener(cl);
+        info_save2.setOnClickListener(cl);
 
     }
 
@@ -417,23 +644,39 @@ public class management extends baseActivity {
             try {
                 int arr_size = urls.length;
                 for (int i = 0; i < arr_size; i++) {
-                    String childName = infoList.get(0).goodId;
+                    String childName = goodsIdVideo;
 //                    URL url = new URL(string_url.);
-//
-                    if (infoList.get(i).lang.equalsIgnoreCase("한국어")) {
-                        childName = childName + "_kor.mp4";
-                        lang = "kor";
-                    } else if (infoList.get(i).lang.equalsIgnoreCase("영어")) {
-                        childName = childName + "_eng.mp4";
-                        lang = "eng";
-                    } else if (infoList.get(i).lang.equalsIgnoreCase("일본어")) {
-                        childName = childName + "_jap.mp4";
-                        lang = "jap";
-                    } else if (infoList.get(i).lang.equalsIgnoreCase("중국어")) {
-                        childName = childName + "_chi.mp4";
-                        lang = "chi";
-                    }
 
+                    if (infoList == null || !infoList2.isEmpty()) {
+                        if (infoList2.get(i).lang.equalsIgnoreCase("한국어")) {
+                            childName = childName + "_kor.mp4";
+                            lang = "kor";
+                        } else if (infoList2.get(i).lang.equalsIgnoreCase("영어")) {
+                            childName = childName + "_eng.mp4";
+                            lang = "eng";
+                        } else if (infoList2.get(i).lang.equalsIgnoreCase("일본어")) {
+                            childName = childName + "_jap.mp4";
+                            lang = "jap";
+                        } else if (infoList2.get(i).lang.equalsIgnoreCase("중국어")) {
+                            childName = childName + "_chi.mp4";
+                            lang = "chi";
+                        }
+
+                    } else if (infoList2 == null || !infoList.isEmpty()) {
+                        if (infoList.get(i).lang.equalsIgnoreCase("한국어")) {
+                            childName = childName + "_kor.mp4";
+                            lang = "kor";
+                        } else if (infoList.get(i).lang.equalsIgnoreCase("영어")) {
+                            childName = childName + "_eng.mp4";
+                            lang = "eng";
+                        } else if (infoList.get(i).lang.equalsIgnoreCase("일본어")) {
+                            childName = childName + "_jap.mp4";
+                            lang = "jap";
+                        } else if (infoList.get(i).lang.equalsIgnoreCase("중국어")) {
+                            childName = childName + "_chi.mp4";
+                            lang = "chi";
+                        }
+                    }
 
                     connection = urls[i].openConnection();
                     connection.connect();
@@ -537,7 +780,8 @@ public class management extends baseActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions,
+                                           int[] grantResults) {
         switch (permsRequestCode) {
 
             case PERMISSION_REQUEST_CODE:

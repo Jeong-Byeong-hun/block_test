@@ -2,14 +2,20 @@ package com.example.block_test;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.Point;
+import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import static com.example.block_test.management.goodsList;
 import static com.example.block_test.management.infoList;
 
 public class goodsInfo extends baseActivity implements View.OnKeyListener {
@@ -23,12 +29,13 @@ public class goodsInfo extends baseActivity implements View.OnKeyListener {
     SharedPreferences.Editor editor;
     InputMethodManager imm;
 
+    String goodsId;
     String str_kName,str_kConsumer,str_kSell,str_kSize,str_kColor,str_kMemo;
     String str_eName,str_eConsumer,str_eSell,str_eSize,str_eColor,str_eMemo;
     String str_jName,str_jConsumer,str_jSell,str_jSize,str_jColor,str_jMemo;
     String str_cName,str_cConsumer,str_cSell,str_cSize,str_cColor,str_cMemo;
 
-
+    int width;
     @Override
     protected void init() {
         setContentView(R.layout.activity_goodsinfo);
@@ -66,13 +73,14 @@ public class goodsInfo extends baseActivity implements View.OnKeyListener {
 
         save_Info = findViewById(R.id.goodsInfoSave);
 
+
         pref = getSharedPreferences("info", MODE_PRIVATE);
         editor = pref.edit();
 
 
 
 
-
+        goodsId = pref.getString("topGoodsId","");
 
         str_kName = pref.getString("kName","");
         str_kConsumer = pref.getString("kConsumer","");
@@ -109,6 +117,8 @@ public class goodsInfo extends baseActivity implements View.OnKeyListener {
         save_Info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                goodsId = infoList.get(0).goodId.trim();
+
                 str_kName = kor_name.getText().toString();
                 str_kConsumer = kor_consumer.getText().toString();
                 str_kSell = kor_sell.getText().toString();
@@ -138,6 +148,8 @@ public class goodsInfo extends baseActivity implements View.OnKeyListener {
                 str_cMemo = chi_memo.getText().toString();
 
 
+                editor.putString("topGoodsId",goodsId);
+
                 editor.putString("kName",str_kName);
                 editor.putString("kConsumer",str_kConsumer);
                 editor.putString("kSell",str_kSell);
@@ -166,11 +178,14 @@ public class goodsInfo extends baseActivity implements View.OnKeyListener {
                 editor.putString("cColor",str_cColor);
                 editor.putString("cMemo",str_cMemo);
 
+                Log.d("testMemo",str_kMemo);
+                Log.d("testMemo",str_eMemo);
+                Log.d("testMemo",str_jMemo);
+                Log.d("testMemo",str_cMemo);
+
                 editor.commit();
 
                 Toast.makeText(getApplicationContext(),"저장되었습니다.",Toast.LENGTH_LONG).show();
-
-
 
 
             }

@@ -26,7 +26,7 @@
                 android:textSize="25dp" />
 
             <EditText
-                android:id="@+id/kor_name"
+                android:id="@+id/kor_name2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
@@ -48,11 +48,10 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/kor_consumer"
+                    android:id="@+id/kor_consumer2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
-                    android:inputType="number"
                     android:hint="소비자가격"
                     android:textColor="@color/black"
 
@@ -73,12 +72,11 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/kor_sell"
+                    android:id="@+id/kor_sell2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:hint="판매가"
-                    android:inputType="number"
                     android:textColor="@color/black"
                     android:textSize="25dp" />
             </LinearLayout>
@@ -97,7 +95,7 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/kor_size"
+                    android:id="@+id/kor_size2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
@@ -120,7 +118,7 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/kor_color"
+                    android:id="@+id/kor_color2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
@@ -143,7 +141,7 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/kor_memo"
+                    android:id="@+id/kor_memo2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
@@ -170,7 +168,7 @@
                 android:textSize="25dp" />
 
             <EditText
-                android:id="@+id/eng_name"
+                android:id="@+id/eng_name2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
@@ -192,12 +190,11 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/eng_consumer"
+                    android:id="@+id/eng_consumer2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:hint="소비자가격"
-                    android:inputType="number"
                     android:textColor="@color/black"
 
                     android:textSize="25dp" />
@@ -217,12 +214,11 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/eng_sell"
+                    android:id="@+id/eng_sell2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:hint="판매가"
-                    android:inputType="number"
                     android:textColor="@color/black"
                     android:textSize="25dp" />
             </LinearLayout>
@@ -241,7 +237,7 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/eng_size"
+                    android:id="@+id/eng_size2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
@@ -264,7 +260,7 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/eng_color"
+                    android:id="@+id/eng_color2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
@@ -287,7 +283,7 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/eng_memo"
+                    android:id="@+id/eng_memo2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
@@ -314,7 +310,7 @@
                 android:textSize="25dp" />
 
             <EditText
-                android:id="@+id/jap_name"
+                android:id="@+id/jap_name2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
@@ -336,12 +332,11 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/jap_consumer"
+                    android:id="@+id/jap_consumer2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:hint="소비자가격"
-                    android:inputType="number"
                     android:textColor="@color/black"
 
                     android:textSize="25dp" />
@@ -361,12 +356,11 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/jap_sell"
+                    android:id="@+id/jap_sell2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:hint="판매가"
-                    android:inputType="number"
                     android:textColor="@color/black"
                     android:textSize="25dp" />
             </LinearLayout>
@@ -385,7 +379,7 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/jap_size"
+                    android:id="@+id/jap_size2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
@@ -408,7 +402,7 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/jap_color"
+                    android:id="@+id/jap_color2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
@@ -431,7 +425,7 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/jap_memo"
+                    android:id="@+id/jap_memo2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
@@ -457,7 +451,7 @@
                 android:textSize="25dp" />
 
             <EditText
-                android:id="@+id/chi_name"
+                android:id="@+id/chi_name2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
@@ -479,12 +473,11 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/chi_consumer"
+                    android:id="@+id/chi_consumer2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:hint="소비자가격"
-                    android:inputType="number"
                     android:textColor="@color/black"
 
                     android:textSize="25dp" />
@@ -504,12 +497,11 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/chi_sell"
+                    android:id="@+id/chi_sell2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:hint="판매가"
-                    android:inputType="number"
                     android:textColor="@color/black"
                     android:textSize="25dp" />
             </LinearLayout>
@@ -528,7 +520,7 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/chi_size"
+                    android:id="@+id/chi_size2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
@@ -551,7 +543,7 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/chi_color"
+                    android:id="@+id/chi_color2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
@@ -574,7 +566,7 @@
                     android:textSize="25dp" />
 
                 <EditText
-                    android:id="@+id/chi_memo"
+                    android:id="@+id/chi_memo2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
@@ -589,18 +581,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
-
-
-<!--        <Button-->
-<!--            android:id="@+id/backBtn"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="60dp"-->
-<!--            android:text="뒤로가기"-->
-<!--            android:background="@color/colorPrimary"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:layout_gravity="center"/>-->
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/goodsInfoSave"

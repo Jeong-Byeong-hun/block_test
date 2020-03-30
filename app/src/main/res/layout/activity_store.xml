@@ -9,228 +9,29 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="3dp"
-        android:layout_weight="1"
-        android:background="@drawable/under_stroke">
-
-        <ImageView
-            android:id="@+id/top_imageView"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/abcd01066643050a" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.6"
-            android:orientation="vertical">
-
-
-            <TextView
-                android:id="@+id/top_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:text="매트리스 이름 "
-                android:textColor="#ff000000"
-                android:textSize="25dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0.01dp"
-                android:layout_margin="10dp"
-                android:background="#ffdedede" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="3"
-                    android:text="소비자가"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:id="@+id/top_Price"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:text="4,040,000"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="3"
-                    android:text="색상"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:id="@+id/top_color"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:text="색상"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="3"
-                    android:text="사이즈"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:id="@+id/top_size"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:text="size"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="7dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="3"
-                    android:text="판매가"
-                    android:textColor="#ff0064ff"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:id="@+id/sale_Price"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:text="3,600,000"
-                    android:textColor="#ff0064ff"
-                    android:textSize="20dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="7dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="3"
-                    android:text="마일리지"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:id="@+id/mileage"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:text="3%"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="7dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="3"
-                    android:text="배송방법"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:id="@+id/delivery"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:text="직접배송"
-                    android:textColor="@color/black"
-                    android:textSize="20dp" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0.01dp"
-                android:layout_margin="10dp"
-                android:background="#ffdedede" />
-
-            <TextView
-                android:id="@+id/nprice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:gravity="right"
-                android:text="정상가 : 4,040,000 원"
-                android:textColor="@color/black"
-                android:textSize="28dp" />
-
-            <TextView
-                android:id="@+id/sprice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:gravity="right"
-                android:text="판매가 : 3,600,000 원"
-                android:textColor="#ff0064ff"
-                android:textSize="38dp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
         android:layout_weight="1">
 
-        <ImageView
-            android:id="@+id/bot_imageView"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
             android:layout_weight="1"
-            app:srcCompat="@drawable/abcd01066643050a" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="사진을 클릭하시면 영상이 시작됩니다."
+                android:textSize="30dp"
+                android:textColor="@color/black"/>
+            <ImageView
+                android:id="@+id/top_imageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                app:srcCompat="@drawable/abcd01066643050a" />
+        </LinearLayout>
+
+
 
         <LinearLayout
             android:layout_width="0dp"
@@ -238,138 +39,139 @@
             android:layout_weight="0.6"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/bot_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="30dp"
-                android:text="프레임 이름 "
-                android:textColor="#ff000000"
-                android:textSize="25dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0.01dp"
-                android:layout_margin="10dp"
-                android:background="#ffdedede" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:id="@+id/top_name"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_weight="3"
-                    android:text="소비자가"
-                    android:textSize="20dp" />
+                    android:layout_marginTop="5dp"
+                    android:text="매트리스 이름 "
+                    android:textColor="#ff000000"
+                    android:textSize="50dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0.01dp"
+                    android:layout_margin="10dp"
+                    android:background="#ffdedede" />
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp">
+
+                    <TextView
+                        android:id="@+id/tv_color"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="3"
+                        android:text="색상"
+                        android:textColor="@color/black"
+                        android:textSize="30dp" />
+
+                    <TextView
+                        android:id="@+id/top_color"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_weight="9"
+                        android:text="색상"
+                        android:textColor="@color/black"
+                        android:textSize="30dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp">
+
+                    <TextView
+                        android:id="@+id/tv_size"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="3"
+                        android:text="사이즈"
+                        android:textColor="@color/black"
+                        android:textSize="30dp" />
+
+                    <TextView
+                        android:id="@+id/top_size"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_weight="9"
+                        android:text="size"
+                        android:textColor="@color/black"
+                        android:textSize="30dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp">
+
+                    <TextView
+                        android:id="@+id/tv_memo"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="3"
+                        android:text="메모"
+                        android:textColor="@color/black"
+                        android:textSize="30dp" />
+
+                    <TextView
+                        android:id="@+id/top_memo"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_weight="9"
+                        android:text="memo"
+                        android:textColor="@color/black"
+                        android:textSize="30dp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0.01dp"
+                    android:layout_margin="10dp"
+                    android:background="#ffdedede" />
 
                 <TextView
-                    android:id="@+id/bot_Price"
-                    android:layout_width="0dp"
+                    android:id="@+id/nprice"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:text="4,040,000"
-                    android:textSize="20dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="7dp">
+                    android:layout_marginRight="10dp"
+                    android:gravity="right"
+                    android:text="정상가 : 4,040,000 원"
+                    android:textColor="@color/black"
+                    android:textSize="36dp" />
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:id="@+id/sprice"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="3"
-                    android:text="판매가"
+                    android:layout_marginRight="10dp"
+                    android:gravity="right"
+                    android:text="판매가 : 3,600,000 원"
                     android:textColor="#ff0064ff"
-                    android:textSize="20dp" />
+                    android:textSize="44dp" />
 
-                <TextView
-                    android:id="@+id/bot_sale_Price"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:text="3,600,000"
-                    android:textColor="#ff0064ff"
-                    android:textSize="20dp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="7dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="3"
-                    android:text="마일리지"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:id="@+id/bot_mileage"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:text="3%"
-                    android:textSize="20dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="7dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="3"
-                    android:text="배송방법"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:id="@+id/bot_delivery"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="9"
-                    android:text="직접배송"
-                    android:textSize="20dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0.01dp"
-                android:layout_margin="10dp"
-                android:background="#ffdedede" />
-
-            <TextView
-                android:id="@+id/bot_nprice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:gravity="right"
-                android:text="정상가 : 4,040,000 원"
-                android:textSize="28dp" />
-
-            <TextView
-                android:id="@+id/bot_sprice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:gravity="right"
-                android:text="판매가 : 3,600,000 원"
-                android:textColor="#ff0064ff"
-                android:textSize="38dp" />
         </LinearLayout>
-
     </LinearLayout>
 
 </LinearLayout>

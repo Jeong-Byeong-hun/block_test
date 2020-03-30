@@ -10,17 +10,39 @@ public interface APIInterface {
 
 
     @FormUrlEncoded
+    @POST("api/registe")
+    Call<ResponseLog> register(@Field("id") String id,
+                               @Field("password") String password,
+                               @Field("mac") String mac,
+                               @Field("name") String name);
+
+    @FormUrlEncoded
     @POST("api/list")
-    Call<ResponseData> checkAuth(@Field("auth") String auth);
+    Call<ResponseData> checkAuth(@Field("id") String id,
+                                 @Field("password") String password,
+                                 @Field("mac") String mac);
 
     @FormUrlEncoded
     @POST("api/good")
-    Call<ResponseInfo> downInfo(@Field("auth") String auth, @Field("goodsId") String goodsId);
+    Call<ResponseInfo> downInfo(@Field("id") String id,
+                                @Field("password") String password,
+                                @Field("mac") String mac,
+                                @Field("goodsId") String goodsId);
 
     @FormUrlEncoded
     @POST("api/log")
-    Call<ResponseLog> postLog(@Field("auth") String auth, @Field("goodsId") String goodsId,
-                              @Field("storeId") String storeId, @Field("goodsPrice") String goodsPrice,
+    Call<ResponseLog> postLog(@Field("id") String id,
+                              @Field("password") String password,
+                              @Field("mac") String mac,
+                              @Field("goodsId") String goodsId,
+                              @Field("storeId") String storeId,
+                              @Field("deviceName") String deviceName,
+                              @Field("shelfName") String shelfName,
+                              @Field("sellPrice") String sellPrice,
+                              @Field("goodsPrice") String goodsPrice,
+                              @Field("goodsLang" ) String goodsLang,
+                              @Field("goodsSize") String goodsSize,
+                              @Field("goodsColor") String goodsColor,
                               @Field("memo") String memo);
 
 }
